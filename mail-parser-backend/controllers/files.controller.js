@@ -6,7 +6,7 @@ import { FileModel } from "../models/file.model.js"
 import { ImportModel } from "../models/import.model.js"
 import { getAttachment } from "../utils/get-attachment.js"
 
-// 📂 GET ALL FILES
+//  GET ALL FILES
 export async function getAllFiles(req, res) {
     try {
         const files = await FileModel.all()
@@ -17,7 +17,7 @@ export async function getAllFiles(req, res) {
     }
 }
 
-// 🔍 GET ONE FILE BY ID
+//  GET ONE FILE BY ID
 export async function getFileById(req, res) {
     try {
         const file = await FileModel.findById(req.params.id)
@@ -29,7 +29,7 @@ export async function getFileById(req, res) {
     }
 }
 
-// 🧾 PREVIEW A CSV FILE
+//  PREVIEW A CSV FILE
 
 export async function previewCsvFile(req, res) {
     try {
@@ -64,7 +64,7 @@ export async function previewCsvFile(req, res) {
 }
 
 
-// ➕ CREATE FILE RECORD
+//  CREATE FILE RECORD
 export async function createFile(req, res) {
     try {
         const { name, mailbox, savedPath, status, recordsImported } = req.body
@@ -90,7 +90,7 @@ export async function createFile(req, res) {
     }
 }
 
-// 📝 UPDATE FILE
+//  UPDATE FILE
 export async function updateFile(req, res) {
     try {
         const { id } = req.params
@@ -108,7 +108,7 @@ export async function updateFile(req, res) {
     }
 }
 
-// ❌ DELETE FILE
+//  DELETE FILE
 export async function deleteFile(req, res) {
     try {
         const { id } = req.params
@@ -130,7 +130,7 @@ export async function deleteFile(req, res) {
     }
 }
 
-// 📊 FILE ANALYTICS
+//  FILE ANALYTICS
 export async function getFileAnalytics(req, res) {
     try {
         const files = await FileModel
