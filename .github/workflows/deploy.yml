@@ -12,16 +12,20 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2  # Needed for git diff to work
 
       - name: Detect changed services
         id: changes
         run: |
           echo "CHANGED_SERVICES=" >> $GITHUB_ENV
-          git fetch origin main
           git diff --name-only HEAD~1 HEAD | grep -E '^mail-parser-backend/' && echo "backend" >> changed.txt || true
           git diff --name-only HEAD~1 HEAD | grep -E '^mail-parser-client/' && echo "frontend" >> changed.txt || true
           if [ -s changed.txt ]; then
             echo "CHANGED_SERVICES=$(cat changed.txt | xargs)" >> $GITHUB_ENV
+            echo "Changed services: $(cat changed.txt)"
+          else
+            echo "No relevant changes detected."
           fi
 
       - name: Deploy via SSH
