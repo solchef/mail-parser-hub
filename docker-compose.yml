@@ -1,4 +1,30 @@
 services:
+  db:
+    image: mysql:8.0
+    container_name: mailparser-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: mailparser
+      MYSQL_USER: mailuser
+      MYSQL_PASSWORD: mailpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: db
+      PMA_USER: mailuser
+      PMA_PASSWORD: mailpassword
+    ports:
+      - "8081:80"
+    depends_on:
+      - db
+
   backend:
     build:
       context: ./mail-parser-backend
@@ -6,6 +32,8 @@ services:
     env_file: ./mail-parser-backend/.env
     ports:
       - "4000:4000"
+    depends_on:
+      - db
     restart: always
 
   frontend:
@@ -29,3 +57,6 @@ services:
       - frontend
       - backend
     restart: always
+
+volumes:
+  db_data:
