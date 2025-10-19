@@ -38,5 +38,6 @@ jobs:
           script: |
             cd /var/www/mail-parser-hub
             git pull origin main
-            docker-compose build --no-cache ${{ env.CHANGED_SERVICES }}
-            docker-compose up -d ${{ env.CHANGED_SERVICES }}
+            docker compose build --no-cache ${{ env.CHANGED_SERVICES }}
+            docker compose up -d ${{ env.CHANGED_SERVICES }}
+
