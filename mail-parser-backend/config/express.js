@@ -13,7 +13,8 @@ const app = express();
 dotenv.config();
 
 app.set('port', process.env.APP_PORT || 4000);
-app.set('host', process.env.APP_HOST || 'localhost');
+app.set('host', process.env.APP_HOST || '0.0.0.0');
+
 
 app.use(express.static(constant.distDir));
 
