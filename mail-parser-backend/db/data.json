@@ -1,0 +1,19 @@
+{
+  "tenants": [],
+  "mailboxes": [],
+  "users": [
+    {
+      "id": "d929d1eb-e133-4c04-8073-ff3ba09ad846",
+      "name": "Admin",
+      "email": "admin@gmail.com",
+      "password": "$2b$10$bOtfTqgfXezx.yY5/GJUm.6h2MxsGNuJfAEzSWjJigib0h6NdjtI.",
+      "role": "admin",
+      "status": "active"
+    }
+  ],
+  "files": [],
+  "mappings": [],
+  "dbConnections": [],
+  "imports": [],
+  "archivedFiles": []
+}
