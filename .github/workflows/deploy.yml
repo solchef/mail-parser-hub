@@ -1,0 +1,38 @@
+name: Deploy on Push
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Detect changed services
+        id: changes
+        run: |
+          echo "CHANGED_SERVICES=" >> $GITHUB_ENV
+          git fetch origin main
+          git diff --name-only HEAD~1 HEAD | grep -E '^mail-parser-backend/' && echo "backend" >> changed.txt || true
+          git diff --name-only HEAD~1 HEAD | grep -E '^mail-parser-client/' && echo "frontend" >> changed.txt || true
+          if [ -s changed.txt ]; then
+            echo "CHANGED_SERVICES=$(cat changed.txt | xargs)" >> $GITHUB_ENV
+          fi
+
+      - name: Deploy via SSH
+        if: env.CHANGED_SERVICES != ''
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            cd /path/to/mailparser
+            git pull origin main
+            docker-compose build --no-cache ${{ env.CHANGED_SERVICES }}
+            docker-compose up -d ${{ env.CHANGED_SERVICES }}
