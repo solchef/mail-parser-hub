@@ -58,5 +58,19 @@ services:
       - backend
     restart: always
 
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: always
+    ports:
+      - "9000:9000" # Access Portainer UI via http://<your-server-ip>:9000
+      - "9443:9443" # Optional HTTPS access
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+
 volumes:
   db_data:
+  portainer_data:
+
+
