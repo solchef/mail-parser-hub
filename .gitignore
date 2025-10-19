@@ -19,8 +19,6 @@ coverage/
 *.seed
 *.tgz
 .dockerignore
-Dockerfile*
-
 # OS
 .DS_Store
 Thumbs.db
