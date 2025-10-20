@@ -18,8 +18,6 @@ services:
     restart: always
     environment:
       PMA_HOST: db
-      PMA_USER: mailuser
-      PMA_PASSWORD: mailpassword
     ports:
       - "8081:80"
     depends_on:
