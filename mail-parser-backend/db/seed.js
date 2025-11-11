@@ -9,7 +9,6 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const seedFilePath = path.join(__dirname, './data.json')
 
-// Helper: Convert ISO date → "YYYY-MM-DD HH:MM:SS"
 function toMySQLDate(value) {
     if (!value) return null
     try {
@@ -60,6 +59,23 @@ const order = [
     'archivedFiles',
 ]
 
+async function isDatabaseEmpty() {
+    console.log('🔍 Checking if database is empty...')
+    try {
+        for (const table of order) {
+            const result = await db.selectFrom(table).select('id').limit(1).execute()
+            if (result.length > 0) {
+                console.log(`⚠️ Found data in table "${table}", skipping seeding.`)
+                return false
+            }
+        }
+        return true
+    } catch (err) {
+        console.warn(`⚠️ Could not check tables: ${err.message}`)
+        return false
+    }
+}
+
 async function clearTables() {
     console.log('🧹 Clearing existing data...')
     for (const table of [...order].reverse()) {
@@ -73,10 +89,15 @@ async function clearTables() {
     console.log('✅ Tables cleared\n')
 }
 
-async function seed() {
-    console.log('🌱 Starting database seeding...')
-
+export async function seed() {
     try {
+        const empty = await isDatabaseEmpty()
+        if (!empty) {
+            console.log('🚫 Skipping seeding — database already has data.')
+            return
+        }
+
+        console.log('🌱 Starting database seeding...')
         const rawData = await fs.readFile(seedFilePath, 'utf-8')
         const seedData = JSON.parse(rawData)
 
@@ -90,7 +111,6 @@ async function seed() {
 
             for (const record of records) {
                 try {
-                    // Normalize all date/datetime fields
                     for (const key of Object.keys(record)) {
                         if (key.toLowerCase().includes('date') || key.toLowerCase().includes('at')) {
                             record[key] = toMySQLDate(record[key])
@@ -117,12 +137,8 @@ async function seed() {
             console.log(`✅ Done seeding ${table}`)
         }
 
-        console.log('\n🎉 Seeding complete (with skips if errors occurred)')
+        console.log('\n🎉 Seeding complete!')
     } catch (err) {
         console.error('❌ Fatal seed error:', err)
-    } finally {
-        process.exit(0)
     }
 }
-
-seed()

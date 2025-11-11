@@ -7,7 +7,8 @@ import * as errorHandler from './middlewares/errorHandler.js';
 import joiErrorHandler from './middlewares/joiErrorHandler.js';
 import requestLogger from './middlewares/requestLogger.js';
 import { init } from './config/lowdb.js';
-import './config/migrate.js'
+import { migrate } from './config/migrate.js';
+import { seed } from './db/seed.js'
 import { startMailPolling } from './utils/cron.js';
 
 
@@ -34,6 +35,10 @@ app.get(/.*/, (req, res) => {
 (async () => {
   try {
     await init();
+    // 🧱 Run migrations first
+    await migrate();
+    // 🌱 Then seed the database if first time
+    await seed();
     await startMailPolling();
 
     app.listen(app.get('port'), app.get('host'), () => {

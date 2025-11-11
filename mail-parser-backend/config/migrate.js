@@ -7,7 +7,6 @@ dotenv.config();
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// connect same way as in knexfile
 const db = knex({
     client: 'mysql2',
     connection: {
@@ -15,23 +14,23 @@ const db = knex({
         port: process.env.DB_PORT,
         user: process.env.DB_USER,
         password: process.env.DB_PASSWORD,
-        database: process.env.DB_NAME
+        database: process.env.DB_NAME,
     },
     migrations: {
         directory: resolve(__dirname, '../migrations'),
-        tableName: 'knex_migrations'
-    }
+        tableName: 'knex_migrations',
+    },
 });
 
-(async () => {
+export async function migrate() {
     try {
         console.log('⏳ Running pending migrations...');
         await db.migrate.latest();
         console.log('✅ All migrations are up to date.');
     } catch (err) {
         console.error('❌ Migration failed:', err);
-        process.exit(1);
+        throw err;
     } finally {
         await db.destroy();
     }
-})();
+}
