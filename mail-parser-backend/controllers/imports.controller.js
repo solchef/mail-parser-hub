@@ -48,7 +48,7 @@ export async function processImport(req, res) {
         filename: file.filename,
         mappingId,
         status: "pending",
-        importedAt: new Date().toISOString(),
+        importedAt: new Date().toISOString().slice(0, 19).replace('T', ' '),
         recordsImported: 0,
         errors: []
     };
@@ -171,7 +171,7 @@ export async function saveMappingAndImport(req, res) {
         table,
         mapping,
         options,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString().slice(0, 19).replace('T', ' ')
     });
 
     req.body.dbConfig = await DBConnectionModel.findById(connectionId);

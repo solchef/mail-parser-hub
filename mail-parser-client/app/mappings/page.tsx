@@ -48,7 +48,7 @@ export default function MappingsPage() {
   }
 
   const handleDuplicateMapping = async (mapping: any) => {
-    const duplicate = { ...mapping, id: undefined, createdAt: new Date().toISOString() }
+    const duplicate = { ...mapping, id: undefined, createdAt: new Date().toISOString().slice(0, 19).replace('T', ' ') }
     const newMapping = await api.mappings.create(duplicate)
     setMappings(prev => [...prev, newMapping])
   }

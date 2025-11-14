@@ -60,6 +60,7 @@ async function pollMailboxes() {
                     console.log(`[CRON] Saved ${processedFiles.length} attachments for ${mb.email}`)
                 }
             } catch (err) {
+                console.log(err)
                 console.error(`[CRON] Error for mailbox ${mb.email}:`, err.message)
             }
         }

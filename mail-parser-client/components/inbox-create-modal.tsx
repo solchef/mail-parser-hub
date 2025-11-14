@@ -86,9 +86,11 @@ export default function InboxCreateModal({ isOpen, onClose, onCreated }: any) {
         setError("");
 
         try {
+            const fullEmail = `${email}@${type === "imap" ? "mailparserhub.com" : "mailparsergmail.com"}`;
+
             const payload: any = {
                 name,
-                email,
+                email: fullEmail,
                 type,
                 uploadsBase: `./uploads/${name.toLowerCase().replace(/\s/g, "-")}`,
                 gmailConfig: null,
@@ -100,12 +102,12 @@ export default function InboxCreateModal({ isOpen, onClose, onCreated }: any) {
                     host: imapConfig.host,
                     port: Number(imapConfig.port) || 993,
                     tls: !!imapConfig.tls,
-                    user: email, // same as email
+                    user: fullEmail, // same as email
                     password: imapConfig.password,
                 };
             } else {
                 gmailDefault.configured = true;
-                gmailDefault.user = email;
+                gmailDefault.user = fullEmail;
                 gmailDefault.password = password;
                 payload.gmailConfig = gmailDefault;
             }
@@ -194,13 +196,22 @@ export default function InboxCreateModal({ isOpen, onClose, onCreated }: any) {
 
                             <div>
                                 <label className="block text-sm font-medium mb-1">Email Address</label>
-                                <input
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full rounded border px-3 py-2 font-mono"
-                                    placeholder={type === "imap" ? "info@yourdomain.com" : "yourname@gmail.com"}
-                                />
+
+                                <div className="flex items-center rounded border px-3 py-2 font-mono">
+                                    <input
+                                        value={email}
+                                        onChange={(e) => {
+                                            // remove any accidental domain part if user types @something
+                                            const username = e.target.value.split("@")[0];
+                                            setEmail(username);
+                                        }}
+                                        className="w-full outline-none"
+                                        placeholder="username"
+                                    />
+                                    <span className="text-gray-500"> {type === "imap" ? "@mailparserhub.com" : "@mailparsergmail.com"}</span>
+                                </div>
                             </div>
+
                             {type === "gmail" && (
                                 <div>
                                     <label className="block text-sm font-medium mb-1">Password </label>
@@ -224,6 +235,7 @@ export default function InboxCreateModal({ isOpen, onClose, onCreated }: any) {
                                             onChange={(e) => setImapConfig({ ...imapConfig, host: e.target.value })}
                                             className="w-full rounded border px-3 py-2"
                                             placeholder="box.mailparserhub.com"
+                                            readOnly
                                         />
                                     </div>
 

@@ -7,7 +7,7 @@ export const saveConnection = async (req, res) => {
         const conn = {
             ...req.body,
             id: req.body.id || `db_${Date.now()}`,
-            createdAt: new Date().toISOString(),
+            createdAt: new Date().toISOString().slice(0, 19).replace('T', ' '),
         }
 
         await DBConnectionModel.create(conn)

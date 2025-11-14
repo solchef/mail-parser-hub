@@ -8,7 +8,7 @@ export const saveMapping = async (req, res) => {
         const m = {
             ...req.body,
             id: req.body.id || `m_${Date.now()}`,
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString().slice(0, 19).replace('T', ' ')
         };
 
         await MappingModel.create(m);

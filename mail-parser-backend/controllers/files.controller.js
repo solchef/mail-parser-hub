@@ -80,7 +80,7 @@ export async function createFile(req, res) {
             savedPath,
             status: status || "pending",
             recordsImported: recordsImported || 0,
-            createdAt: new Date().toISOString(),
+            createdAt: new Date().toISOString().slice(0, 19).replace('T', ' '),
         })
 
         res.status(201).json(newFile)

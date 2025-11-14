@@ -17,6 +17,7 @@ export async function getAllInboxes(req, res) {
         const inboxes = await MailboxModel.all();
         const files = await FileModel.all();
 
+
         const result = inboxes.map((inbox) => {
             const inboxFiles = files.filter(f => f.mailbox === inbox.email);
 
@@ -101,7 +102,7 @@ export async function createInbox(req, res) {
             email,
             status: "active",
             type,
-            createdAt: new Date().toISOString(),
+            createdAt: new Date().toISOString().slice(0, 19).replace('T', ' ').slice(0, 19).replace('T', ' '),
             uploadsBase: `./uploads/${name.toLowerCase().replace(/\s/g, "-")}`,
         };
 
@@ -218,7 +219,7 @@ export async function getInboxAnalytics(req, res) {
         const inbox = await MailboxModel.findById(id);
         if (!inbox) return res.status(404).json({ message: "Inbox not found" });
 
-        const inboxFiles = await FileModel.where("mailbox", inbox.email);
+        const inboxFiles = await FileModel.findBy("mailbox", inbox.email);
         const thirtyDaysAgo = subDays(new Date(), 30);
 
         const emailsLast30Days = inboxFiles.filter(f => new Date(f.createdAt) >= thirtyDaysAgo).length;
